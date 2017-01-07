@@ -10,7 +10,7 @@ import pandas as pd
 class Generalizer(object):
     def __init__(self, estimater, name):
         """
-        Define the each unit of the base estimater for stacking or blending.
+        Define a unit of the base estimater for stacking or blending.
         
         -----Parameters-----
         estimater:    Estimater such as XGBClassifier() or RandomForestClassifier, which have "predict_proba" method.
