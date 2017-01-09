@@ -28,8 +28,8 @@ class Generalizer(object):
         X:            Features of training data. Pandas DataFrame is expected
         y:            Target of training data. Pandas DataFrame is expected.
         X_sub:        Features of test data. Pandas DataFrame is expected.
-        file_val:     Pass of folder to save predicted meta-features for training data. str is expected.
-        file_test:    Pass of folder to save predicted meta-features for test data. str is expected.
+        file_val:     Path of folder to save predicted meta-features for training data. str is expected.
+        file_test:    Path of folder to save predicted meta-features for test data. str is expected.
         n_fold:       Number of folds to generate meta-features for training data. int is expected. default is 5.
         random_state: Random seed for StratifiedKFold. int is expected. default is 42.
         eval_metric:  Evaluation function to calculate CV-scores. None, "log_loss", or "roc_auc_score" are expected.
@@ -94,8 +94,8 @@ class Generalizer(object):
         X:            Features of training data. Pandas DataFrame is expected
         y:            Target of training data. Pandas DataFrame is expected.
         X_sub:        Features of test data. Pandas DataFrame is expected.
-        file_val:     Pass of folder to save predicted meta-features for training data. str is expected.
-        file_test:   Pass of folder to save predicted meta-features for test data. str is expected.
+        file_val:     Path of folder to save predicted meta-features for training data. str is expected.
+        file_test:   Path of folder to save predicted meta-features for test data. str is expected.
         val_size:     Size of the valdation data separated from training data. float is expected.
         random_state: Random seed for train_test_split. int is expected. default is 42.
         eval_metric:  Evaluation function to calculate CV-scores. None, "log_loss", or "roc_auc_score" are expected.
@@ -139,8 +139,8 @@ class Metafeatures_Generator(object):
         Bundle each individual meta-featues and generates training and test data for meta-classfiers.
         
         -----Parameters-----
-        file_val:     Pass of folder to read the individual meta-features for training data. str is expected.
-        file_test:   Pass of folder to read the individual meta-features for test data. str is expected.
+        file_val:     Path of folder to read the individual meta-features for training data. str is expected.
+        file_test:   Path of folder to read the individual meta-features for test data. str is expected.
         
         -----Returns-----
         hyp_1:        Training data for meta-classifiers. Pandas Dataframe is returned
