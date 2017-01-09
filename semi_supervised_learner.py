@@ -15,7 +15,7 @@ class pseudo_labeler(object):
     
     def pseudo_labeling(self, X_train, y_train, X_test, max_iter=100, th_confidence=0.95, fit_params=None):
         """
-        Generate meta-features of training data and test data by stacked generalization.
+        Extract test data with enough confidence and conduct pseudo-labeling.
         
         -----Parameters-----
         X_train:       Features of training data. Pandas DataFrame is expected
@@ -27,7 +27,7 @@ class pseudo_labeler(object):
         
         -----Returns-----
         X_conf:        Features of test data with enough confidence.
-        y_conf:        Target of test data. Because they have enough confidence, you can treat them as response==1.
+        y_conf:        Target of test data. Because they have enough confidence, you can treat them as data with response==1.
         """
 
         continu = 1
