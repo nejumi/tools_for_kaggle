@@ -1,7 +1,7 @@
 import glob
 import os
-from sklearn.cross_validation import StratifiedKFold
-from sklearn.cross_validation import train_test_split
+from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import train_test_split
 from sklearn.metrics import log_loss, roc_auc_score
 from pandas import DataFrame
 import numpy as np
@@ -54,18 +54,18 @@ class Generalizer(object):
         hyp_1 = DataFrame(index=X.index, 
                           columns=[self.name])
         
-        skf = StratifiedKFold(y.values, n_folds=n_fold, shuffle=True, random_state=random_state)
+        skf = StratifiedKFold(n_splits=n_fold, random_state=random_state, shuffle=True)
         
         evals = {"log_loss": log_loss, "roc_auc_score": roc_auc_score}
         eval_scores = np.zeros(n_fold)
         
-        for k, (train_iloc, test_iloc) in enumerate(skf):
+        for k, (train_iloc, test_iloc) in enumerate(skf.split(X, y)):
             
             train_index = X.iloc[train_iloc].index
             test_index = X.iloc[test_iloc].index
             
-            X_train, X_test = X.ix[train_index], X.ix[test_index]
-            y_train, y_test = y.ix[train_index], y.ix[test_index]
+            X_train, X_test = X.loc[train_index], X.loc[test_index]
+            y_train, y_test = y.loc[train_index], y.loc[test_index]
             
             self.estimater.fit(X_train.as_matrix(), y_train.as_matrix(), **fit_params)
             
@@ -76,7 +76,7 @@ class Generalizer(object):
                                     index=X_test.index, 
                                     columns=[self.name])
             
-            hyp_1.ix[test_index] = output_temp.ix[test_index]
+            hyp_1.loc[test_index] = output_temp.loc[test_index]
 
         if eval_metric is not None:
             print("%s of %s: %-6.6f"%(eval_metric, self.name, eval_scores.mean()))
