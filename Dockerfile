@@ -1,4 +1,4 @@
-FROM nvidia/cuda:8.0-cudnn6-devel-ubuntu16.04
+FROM nvidia/cuda:9.0-cudnn7-devel-ubuntu16.04
 MAINTAINER nejumi <dr_jingles@mac.com>
 
 ARG DEBIAN_FRONTEND=noninteractive
@@ -45,10 +45,7 @@ RUN cd /usr/local/src && pip install --no-cache-dir tensorflow-gpu keras
 ##############################################################################
 # other libraries
 ##############################################################################
-RUN cd /usr/local/src && pip install catboost gmail lightgbm #TO DO: LightGBM-GPU is to be installed.
+RUN cd /usr/local/src && pip install catboost gmail lightgbm kaggle umap#TO DO: LightGBM-GPU is to be installed.
 
-RUN cd /usr/local/src && git clone https://github.com/DmitryUlyanov/Multicore-TSNE.git && \
-    cd Multicore-TSNE/ && \
-    pip install --no-cache-dir .
-
+RUN cd /usr/local/src && pip install git+https://github.com/LAL/trackml-library
 RUN cd /usr/local/src && pip install git+https://github.com/hyperopt/hyperopt.git
