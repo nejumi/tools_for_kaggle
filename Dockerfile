@@ -40,7 +40,7 @@ RUN cd /usr/local/src && git clone --recursive https://github.com/dmlc/xgboost &
 ##############################################################################
 # keras
 ##############################################################################
-RUN cd /usr/local/src && pip install --no-cache-dir tensorflow-gpu
+RUN cd /usr/local/src && pip --no-cache-dir install -I -U tensorflow-gpu
 RUN pip install keras
 
 ##############################################################################
