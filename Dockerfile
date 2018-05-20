@@ -47,6 +47,6 @@ RUN pip install keras
 # other libraries
 ##############################################################################
 RUN cd /usr/local/src && pip install catboost gmail lightgbm kaggle umap-learn tqdm hdbscan #TO DO: LightGBM-GPU is to be installed.
-
+RUN pip install --upgrade pandas # anaconda-padas is out of date for trackml usage.
 RUN cd /usr/local/src && pip install git+https://github.com/LAL/trackml-library
 RUN cd /usr/local/src && pip install git+https://github.com/hyperopt/hyperopt.git
