@@ -16,9 +16,9 @@ RUN apt-get update && \
     apt-get install -y wget bzip2 ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 
-RUN wget https://repo.continuum.io/archive/Anaconda3-4.4.0-Linux-x86_64.sh && \
-    /bin/bash Anaconda3-4.4.0-Linux-x86_64.sh -b -p /opt/conda && \
-    rm Anaconda3-4.4.0-Linux-x86_64.sh
+RUN wget https://repo.continuum.io/archive/Anaconda3-5.0.1-Linux-x86_64.sh && \
+    /bin/bash Anaconda3-5.0.1-Linux-x86_64.sh -b -p /opt/conda && \
+    rm Anaconda3-5.0.1-Linux-x86_64.sh
 
 ENV PATH /opt/conda/bin:$PATH
 RUN pip install --upgrade pip
@@ -47,6 +47,5 @@ RUN pip install keras
 # other libraries
 ##############################################################################
 RUN cd /usr/local/src && pip install catboost gmail lightgbm kaggle umap-learn tqdm hdbscan #TO DO: LightGBM-GPU is to be installed.
-RUN pip install --upgrade pandas # anaconda-padas is out of date for trackml usage.
 RUN cd /usr/local/src && pip install git+https://github.com/LAL/trackml-library
 RUN cd /usr/local/src && pip install git+https://github.com/hyperopt/hyperopt.git
