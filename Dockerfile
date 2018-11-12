@@ -22,6 +22,7 @@ RUN wget https://repo.continuum.io/archive/Anaconda3-5.3.0-Linux-x86_64.sh && \
 
 ENV PATH /opt/conda/bin:$PATH
 RUN pip install --upgrade pip
+RUN conda install python=3.6.6
 
 RUN apt-get update && \
     # Anaconda's build of gcc is way out of date; monkey-patch some linking problems that affect
