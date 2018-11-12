@@ -17,8 +17,8 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 RUN wget https://repo.continuum.io/archive/Anaconda3-5.0.1-Linux-x86_64.sh && \
-    /bin/bash Anaconda3-5.0.1-Linux-x86_64.sh -b -p /opt/conda && \
-    rm Anaconda3-5.0.1-Linux-x86_64.sh
+    /bin/bash Anaconda3-5.3.0-Linux-x86_64.sh -b -p /opt/conda && \
+    rm Anaconda3-5.3.0-Linux-x86_64.sh
 
 ENV PATH /opt/conda/bin:$PATH
 RUN pip install --upgrade pip
