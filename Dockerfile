@@ -16,13 +16,12 @@ RUN apt-get update && \
     apt-get install -y wget bzip2 ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 
-RUN wget https://repo.continuum.io/archive/Anaconda3-5.3.0-Linux-x86_64.sh && \
-    /bin/bash Anaconda3-5.3.0-Linux-x86_64.sh -b -p /opt/conda && \
-    rm Anaconda3-5.3.0-Linux-x86_64.sh
+RUN wget https://repo.continuum.io/archive/Anaconda3-5.2.0-Linux-x86_64.sh && \
+    /bin/bash Anaconda3-5.2.0-Linux-x86_64.sh -b -p /opt/conda && \
+    rm Anaconda3-5.2.0-Linux-x86_64.sh
 
 ENV PATH /opt/conda/bin:$PATH
 RUN pip install --upgrade pip
-RUN conda install python=3.6.6
 
 RUN apt-get update && \
     # Anaconda's build of gcc is way out of date; monkey-patch some linking problems that affect
