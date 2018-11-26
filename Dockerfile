@@ -46,6 +46,7 @@ RUN pip install keras
 ##############################################################################
 # other libraries
 ##############################################################################
-RUN cd /usr/local/src && pip install catboost gmail lightgbm kaggle umap-learn tqdm nltk hdbscan #TO DO: LightGBM-GPU is to be installed.
+RUN cd /usr/local/src && pip install catboost gmail lightgbm kaggle umap-learn tqdm nltk hdbscan spacy #TO DO: LightGBM-GPU is to be installed.
+RUN python -m spacy download en
 RUN cd /usr/local/src && pip install torch torchvision
 RUN cd /usr/local/src && pip install git+https://github.com/hyperopt/hyperopt.git
