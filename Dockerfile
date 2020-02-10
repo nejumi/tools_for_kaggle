@@ -1,4 +1,4 @@
-FROM nvidia/cuda:9.0-cudnn7-devel-ubuntu16.04
+FROM nvidia/cuda:10.0-cudnn7-devel-ubuntu18.04
 MAINTAINER nejumi <dr_jingles@mac.com>
 
 ARG DEBIAN_FRONTEND=noninteractive
@@ -51,9 +51,9 @@ RUN apt-get update && \
     apt-get install -y wget bzip2 ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 
-RUN wget https://repo.continuum.io/archive/Anaconda3-5.2.0-Linux-x86_64.sh && \
-    /bin/bash Anaconda3-5.2.0-Linux-x86_64.sh -b -p /opt/conda && \
-    rm Anaconda3-5.2.0-Linux-x86_64.sh
+RUN wget https://repo.continuum.io/archive/Anaconda3-2019.10-Linux-x86_64.sh && \
+    /bin/bash Anaconda3-2019.10-Linux-x86_64.sh -b -p /opt/conda && \
+    rm Anaconda3-2019.10-Linux-x86_64.sh
 
 ENV PATH /opt/conda/bin:$PATH
 RUN pip install --upgrade pip
@@ -73,7 +73,7 @@ RUN cd /usr/local/src && mkdir lightgbm && cd lightgbm && \
 git clone --recursive https://github.com/Microsoft/LightGBM && \
 cd LightGBM && mkdir build && cd build && \
 cmake -DUSE_GPU=1 -DOpenCL_LIBRARY=/usr/local/cuda/lib64/libOpenCL.so -DOpenCL_INCLUDE_DIR=/usr/local/cuda/include/ .. && \ 
- make OPENCL_HEADERS=/usr/local/cuda-8.0/targets/x86_64-linux/include LIBOPENCL=/usr/local/cuda-8.0/targets/x86_64-linux/lib
+ make OPENCL_HEADERS=/usr/local/cuda/targets/x86_64-linux/include LIBOPENCL=/usr/local/cuda/targets/x86_64-linux/lib
 
 ENV PATH /usr/local/src/lightgbm/LightGBM:${PATH}
 
@@ -82,20 +82,17 @@ RUN /bin/bash -c "cd /usr/local/src/lightgbm/LightGBM/python-package && python s
 ##############################################################################
 # XGBoost-GPU
 ##############################################################################
-RUN cd /usr/local/src && git clone --recursive https://github.com/dmlc/xgboost && \
-    cd xgboost && mkdir build && cd build && cmake .. -DPLUGIN_UPDATER_GPU=ON && make -j4 && \
-    cd ../python-package && python3 setup.py install
+RUN pip install xgboost
 
 ##############################################################################
 # keras
 ##############################################################################
-RUN cd /usr/local/src && pip --no-cache-dir install -I -U tensorflow-gpu
+RUN cd /usr/local/src && pip --no-cache-dir install -I -U tensorflow-gpu==1.13.1
 RUN pip install keras
 
 ##############################################################################
 # other libraries
 ##############################################################################
-RUN cd /usr/local/src && pip install catboost kaggle umap-learn tqdm nltk hdbscan spacy category_encoders gensim optuna cupy #TO DO: catboost-GPU is to be installed.
-RUN python -m spacy download en
+RUN cd /usr/local/src && pip install albumentations pyarrow fastparquet catboost kaggle umap-learn tqdm category_encoders optuna cupy opencv-python #TO DO: catboost-GPU is to be installed.
 RUN cd /usr/local/src && pip install torch torchvision
 RUN cd /usr/local/src && pip install git+https://github.com/hyperopt/hyperopt.git
