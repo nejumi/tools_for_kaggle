@@ -69,7 +69,15 @@ RUN apt-get update && \
 # LightGBM-GPU
 ##############################################################################
 
-RUN cd /usr/local/src && pip install lightgbm --install-option=--gpu
+RUN cd /usr/local/src && mkdir lightgbm && cd lightgbm && \
+git clone --recursive https://github.com/Microsoft/LightGBM && \
+cd LightGBM && mkdir build && cd build && \
+cmake -DUSE_GPU=1 -DOpenCL_LIBRARY=/usr/local/cuda/lib64/libOpenCL.so -DOpenCL_INCLUDE_DIR=/usr/local/cuda/include/ .. && \ 
+ make OPENCL_HEADERS=/usr/local/cuda/targets/x86_64-linux/include LIBOPENCL=/usr/local/cuda/targets/x86_64-linux/lib
+
+ENV PATH /usr/local/src/lightgbm/LightGBM:${PATH}
+
+RUN /bin/bash -c "cd /usr/local/src/lightgbm/LightGBM/python-package && python setup.py install --precompile"
 
 ##############################################################################
 # XGBoost-GPU
