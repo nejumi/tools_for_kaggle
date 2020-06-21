@@ -1,4 +1,4 @@
-FROM nvidia/cuda:10.0-cudnn7-devel-ubuntu18.04
+FROM nvidia/cuda:10.1-cudnn7-devel-ubuntu18.04
 MAINTAINER nejumi <dr_jingles@mac.com>
 
 ARG DEBIAN_FRONTEND=noninteractive
@@ -45,32 +45,35 @@ RUN chmod +x /tini
 
            
 ##############################################################################
-# anaconda python
+# Miniconda python
 ##############################################################################
 RUN apt-get update && \
     apt-get install -y wget bzip2 ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 
-RUN wget https://repo.continuum.io/archive/Anaconda3-2019.10-Linux-x86_64.sh && \
-    /bin/bash Anaconda3-2019.10-Linux-x86_64.sh -b -p /opt/conda && \
-    rm Anaconda3-2019.10-Linux-x86_64.sh
+RUN wget https://repo.anaconda.com/miniconda/Miniconda3-py37_4.8.3-Linux-x86_64.sh && \
+    /bin/bash Miniconda3-py37_4.8.3-Linux-x86_64.sh -b -p /opt/conda && \
+    rm Miniconda3-py37_4.8.3-Linux-x86_64.sh
 
 ENV PATH /opt/conda/bin:$PATH
 RUN pip install --upgrade pip
 
 RUN apt-get update && \
-    # Anaconda's build of gcc is way out of date; monkey-patch some linking problems that affect
+    # Miniconda's build of gcc is way out of date; monkey-patch some linking problems that affect
     # packages like xgboost and Shapely
     rm /opt/conda/lib/libstdc++* && rm /opt/conda/lib/libgomp.* && \
     ln -s /usr/lib/x86_64-linux-gnu/libgomp.so.1 /opt/conda/lib/libgomp.so.1 && \
     ln -s /usr/lib/x86_64-linux-gnu/libstdc++.so.6 /opt/conda/lib/libstdc++.so.6
+    
+RUN cd /usr/local/src && pip install scikit-learn tables
+RUN cd /usr/local/src && conda install lxml h5py hdf5 html5lib beautifulsoup4
 
 ##############################################################################
 # LightGBM-GPU
 ##############################################################################
 
 RUN cd /usr/local/src && mkdir lightgbm && cd lightgbm && \
-git clone --recursive https://github.com/Microsoft/LightGBM && \
+git clone -b v2.3.1 https://github.com/microsoft/LightGBM && \
 cd LightGBM && mkdir build && cd build && \
 cmake -DUSE_GPU=1 -DOpenCL_LIBRARY=/usr/local/cuda/lib64/libOpenCL.so -DOpenCL_INCLUDE_DIR=/usr/local/cuda/include/ .. && \ 
  make OPENCL_HEADERS=/usr/local/cuda/targets/x86_64-linux/include LIBOPENCL=/usr/local/cuda/targets/x86_64-linux/lib
@@ -85,14 +88,27 @@ RUN /bin/bash -c "cd /usr/local/src/lightgbm/LightGBM/python-package && python s
 RUN cd /usr/local/src && pip install xgboost
 
 ##############################################################################
-# keras
+# tensorflow
 ##############################################################################
-RUN cd /usr/local/src && pip --no-cache-dir install -I -U tensorflow-gpu==1.13.1
-RUN pip install keras
+RUN cd /usr/local/src && pip --no-cache-dir install -I -U tensorflow==2.2.0
+RUN cd /usr/local/src && pip install keras
+
+##############################################################################
+# rapidsai
+##############################################################################
+RUN cd /usr/local/src && conda install -c rapidsai -c nvidia -c conda-forge -c defaults rapids=0.14 python=3.7 cudatoolkit=10.1
+RUN conda install -y -c conda-forge ipywidgets && jupyter nbextension enable --py widgetsnbextension
+
+##############################################################################
+# xfeat
+##############################################################################
+RUN cd /usr/local/src && git clone --recursive https://github.com/pfnet-research/xfeat && \
+cd xfeat && python setup.py install
 
 ##############################################################################
 # other libraries
 ##############################################################################
-RUN cd /usr/local/src && pip install albumentations pyarrow fastparquet catboost kaggle umap-learn tqdm category_encoders optuna cupy opencv-python image-classifiers #TO DO: catboost-GPU is to be installed.
-RUN cd /usr/local/src && pip install torch torchvision
+RUN cd /usr/local/src && pip install albumentations seaborn pyarrow fastparquet catboost kaggle \
+category_encoders optuna opencv-python image-classifiers tsfresh librosa
+RUN cd /usr/local/src && conda install pytorch torchvision cudatoolkit=10.1 -c pytorch
 RUN cd /usr/local/src && pip install git+https://github.com/hyperopt/hyperopt.git
