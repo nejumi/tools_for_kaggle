@@ -10,25 +10,28 @@ RUN apt-get update && \
     git --version
 
 RUN apt-get update && \
-apt-get install -y \
-curl \
-wget \
-bzip2 \
-ca-certificates \
-libglib2.0-0 \
-libxext6 \
-libsm6 \
-libxrender1 \
-git \
-vim \
-mercurial \
-subversion \
-cmake \
-libboost-dev \
-libboost-system-dev \
-libboost-filesystem-dev \
-gcc \
-g++
+    apt-get install -y \
+    curl \
+    wget \
+    bzip2 \
+    ca-certificates \
+    libglib2.0-0 \
+    libxext6 \
+    libsm6 \
+    libxrender1 \
+    git \
+    vim \
+    mercurial \
+    subversion \
+    cmake \
+    libboost-dev \
+    libboost-system-dev \
+    libboost-filesystem-dev \
+    gcc \
+    g++
+
+RUN apt update && \
+    apt install unzip
 
 # Add OpenCL ICD files for LightGBM
 RUN mkdir -p /etc/OpenCL/vendors && \
@@ -42,7 +45,6 @@ echo "libnvidia-opencl.so.1" > /etc/OpenCL/vendors/nvidia.icd
 ENV TINI_VERSION v0.14.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
 RUN chmod +x /tini
-
            
 ##############################################################################
 # Miniconda python
@@ -75,8 +77,8 @@ RUN cd /usr/local/src && conda install lxml h5py hdf5 html5lib beautifulsoup4
 RUN cd /usr/local/src && mkdir lightgbm && cd lightgbm && \
 git clone -b v2.3.1 https://github.com/microsoft/LightGBM && \
 cd LightGBM && mkdir build && cd build && \
-cmake -DUSE_GPU=1 -DOpenCL_LIBRARY=/usr/local/cuda/lib64/libOpenCL.so -DOpenCL_INCLUDE_DIR=/usr/local/cuda/include/ .. && \ 
- make OPENCL_HEADERS=/usr/local/cuda/targets/x86_64-linux/include LIBOPENCL=/usr/local/cuda/targets/x86_64-linux/lib
+    cmake -DUSE_GPU=1 -DOpenCL_LIBRARY=/usr/local/cuda/lib64/libOpenCL.so -DOpenCL_INCLUDE_DIR=/usr/local/cuda/include/ .. && \ 
+    make OPENCL_HEADERS=/usr/local/cuda/targets/x86_64-linux/include LIBOPENCL=/usr/local/cuda/targets/x86_64-linux/lib
 
 ENV PATH /usr/local/src/lightgbm/LightGBM:${PATH}
 
@@ -109,6 +111,6 @@ cd xfeat && python setup.py install
 # other libraries
 ##############################################################################
 RUN cd /usr/local/src && pip install albumentations seaborn pyarrow fastparquet catboost kaggle \
-category_encoders optuna opencv-python image-classifiers tsfresh librosa
+    category_encoders optuna opencv-python image-classifiers tsfresh librosa gsutil
 RUN cd /usr/local/src && conda install pytorch torchvision cudatoolkit=10.1 -c pytorch
 RUN cd /usr/local/src && pip install git+https://github.com/hyperopt/hyperopt.git
